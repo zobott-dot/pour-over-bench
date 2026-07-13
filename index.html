@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pour-Over Bench — V60 &amp; Chemex Brew Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDE9E1;
+  --card:#FBF9F4;
+  --ink:#26201A;
+  --ink-soft:#6E6156;
+  --copper:#B26A2B;
+  --copper-deep:#8F5321;
+  --slate:#4E6470;
+  --line:#D8D1C4;
+  --line-dark:#B9B0A0;
+  --good:#4C7A5A;
+  --warn:#A9502F;
+  --water:#7FA8B8;
+  --radius:10px;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Archivo',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.5;
+  padding-bottom:80px;
+}
+/* ---------- header ---------- */
+header{
+  border-bottom:2px solid var(--ink);
+  background:var(--card);
+  padding:20px clamp(16px,4vw,48px) 16px;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--copper-deep);
+}
+h1{
+  font-weight:900;
+  font-size:clamp(26px,4.5vw,44px);
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+  line-height:1.05;
+}
+h1 span{color:var(--copper)}
+.header-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+}
+.toggles{display:flex;gap:12px;flex-wrap:wrap}
+.toggle{
+  display:flex;
+  border:1.5px solid var(--ink);
+  border-radius:999px;
+  overflow:hidden;
+  background:var(--paper);
+}
+.toggle button{
+  font-family:var(--mono);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.06em;
+  padding:8px 16px;
+  border:none;
+  background:transparent;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+.toggle button.on{background:var(--ink);color:var(--card)}
+.toggle button:focus-visible{outline:2px solid var(--copper);outline-offset:-2px}
+
+main{
+  max-width:1080px;
+  margin:0 auto;
+  padding:0 clamp(14px,4vw,40px);
+}
+section{margin-top:44px}
+.sec-label{
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--copper-deep);
+  border-bottom:1px solid var(--line-dark);
+  padding-bottom:6px;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+}
+.sec-label .idx{color:var(--ink-soft)}
+h2{font-weight:800;font-size:clamp(20px,3vw,26px);text-transform:uppercase;letter-spacing:.01em;margin-bottom:10px}
+p.lede{color:var(--ink-soft);max-width:62ch;margin-bottom:14px}
+
+/* ---------- cards & grid ---------- */
+.card{
+  background:var(--card);
+  border:1.5px solid var(--ink);
+  border-radius:var(--radius);
+  padding:18px;
+}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.calc-grid{display:grid;grid-template-columns:5fr 4fr;gap:18px;align-items:start}
+@media(max-width:820px){
+  .grid-2,.grid-3,.calc-grid{grid-template-columns:1fr}
+}
+
+/* ---------- controls ---------- */
+label.field{
+  display:block;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin:14px 0 4px;
+}
+label.field:first-child{margin-top:0}
+input[type=number],select{
+  width:100%;
+  font-family:var(--mono);
+  font-size:16px;
+  padding:9px 10px;
+  border:1.5px solid var(--line-dark);
+  border-radius:6px;
+  background:#fff;
+  color:var(--ink);
+}
+input[type=number]:focus,select:focus{outline:2px solid var(--copper);border-color:var(--copper)}
+input[type=range]{
+  width:100%;
+  accent-color:var(--copper);
+  margin-top:6px;
+}
+.range-row{
+  display:flex;
+  justify-content:space-between;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ink-soft);
+}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.quick button{
+  font-family:var(--mono);
+  font-size:12px;
+  padding:6px 12px;
+  border:1.5px solid var(--line-dark);
+  border-radius:999px;
+  background:var(--paper);
+  cursor:pointer;
+  color:var(--ink);
+}
+.quick button:hover{border-color:var(--copper);color:var(--copper-deep)}
+
+/* ---------- brew card ---------- */
+.brewcard{
+  border:2px solid var(--ink);
+  border-radius:var(--radius);
+  background:var(--card);
+  overflow:hidden;
+}
+.brewcard .bc-head{
+  background:var(--ink);
+  color:var(--card);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:8px 14px;
+  display:flex;
+  justify-content:space-between;
+}
+.bc-body{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.bc-stat{
+  padding:10px 8px;
+  border-bottom:1px dashed var(--line-dark);
+}
+.bc-stat:nth-child(odd){border-right:1px dashed var(--line-dark);padding-right:14px}
+.bc-stat:nth-child(even){padding-left:14px}
+.bc-stat:nth-last-child(-n+2){border-bottom:none}
+.bc-stat .k{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.bc-stat .v{
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:clamp(18px,2.6vw,24px);
+  color:var(--ink);
+}
+.bc-stat .v em{font-style:normal;color:var(--copper);font-size:.65em}
+
+/* ---------- dripper diagram ---------- */
+.diagram-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 4px}
+.diagram-cap{font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- schedule table ---------- */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  text-align:left;
+  padding:8px 10px;
+  border-bottom:1.5px solid var(--ink);
+}
+td{
+  padding:10px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+td.mono, .mono{font-family:var(--mono);font-weight:500;white-space:nowrap}
+tr.active-step{background:#F3E7D6}
+.note-cell{color:var(--ink-soft);font-size:13px}
+
+/* ---------- timer ---------- */
+.timer-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+@media(max-width:820px){.timer-grid{grid-template-columns:1fr}}
+.clock{
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:clamp(52px,10vw,84px);
+  letter-spacing:.02em;
+  line-height:1;
+  text-align:center;
+}
+.timer-step{
+  text-align:center;
+  font-family:var(--mono);
+  margin-top:8px;
+}
+.timer-step .label{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--copper-deep)}
+.timer-step .target{font-size:26px;font-weight:600;margin-top:2px}
+.timer-step .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;font-family:var(--sans)}
+.progress{
+  height:10px;
+  background:var(--paper);
+  border:1.5px solid var(--ink);
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:16px;
+}
+.progress i{display:block;height:100%;background:var(--copper);width:0%}
+.timer-btns{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.btn{
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:11px 22px;
+  border-radius:999px;
+  border:2px solid var(--ink);
+  cursor:pointer;
+  background:var(--card);
+  color:var(--ink);
+}
+.btn.primary{background:var(--ink);color:var(--card)}
+.btn.primary:hover{background:var(--copper-deep);border-color:var(--copper-deep)}
+.btn:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+
+/* ---------- grind scale ---------- */
+.grind-scale{position:relative;height:86px;margin:26px 4px 8px}
+.grind-band{
+  position:absolute;top:34px;left:0;right:0;height:18px;
+  border:1.5px solid var(--ink);
+  border-radius:999px;
+  background:linear-gradient(90deg,#3E2E20 0%,#6B4A2C 30%,#96693B 60%,#C09055 100%);
+}
+.grind-tick{position:absolute;top:56px;font-family:var(--mono);font-size:10px;color:var(--ink-soft);transform:translateX(-50%)}
+.grind-zone-label{position:absolute;top:72px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-soft);transform:translateX(-50%);white-space:nowrap}
+.grind-marker{
+  position:absolute;top:8px;transform:translateX(-50%);
+  text-align:center;transition:left .4s ease;
+}
+.grind-marker .flag{
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  background:var(--ink);color:var(--card);
+  padding:3px 8px;border-radius:4px;white-space:nowrap;
+}
+.grind-marker .stem{width:2px;height:22px;background:var(--ink);margin:0 auto}
+
+/* ---------- extraction lab ---------- */
+.zone-pill{
+  display:inline-block;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 12px;border-radius:999px;border:1.5px solid currentColor;margin-top:6px;
+}
+.zone-good{color:var(--good)}
+.zone-warn{color:var(--warn)}
+.readout{font-family:var(--mono);font-size:30px;font-weight:600}
+.readout small{font-size:14px;color:var(--ink-soft)}
+
+/* ---------- notes & troubleshooting ---------- */
+.note-card h3{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.note-card p{font-size:13.5px;color:var(--ink-soft)}
+.fix{font-family:var(--mono);font-size:12px;color:var(--copper-deep);margin-top:8px;display:block}
+
+footer{
+  margin-top:56px;
+  border-top:1.5px solid var(--line-dark);
+  padding:18px clamp(16px,4vw,48px);
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ink-soft);
+  text-align:center;
+  letter-spacing:.08em;
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div>
+      <div class="eyebrow">Spec Sheet No. 001 · Manual Brew Reference</div>
+      <h1>The Pour-Over <span>Bench</span></h1>
+    </div>
+    <div class="toggles" role="group" aria-label="Global settings">
+      <div class="toggle" id="deviceToggle">
+        <button data-device="v60" class="on">V60</button>
+        <button data-device="chemex">Chemex</button>
+      </div>
+      <div class="toggle" id="unitToggle">
+        <button data-units="metric" class="on">g / °C</button>
+        <button data-units="us">oz / °F</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1. RECIPE ============ -->
+<section id="recipe">
+  <div class="sec-label"><span>Recipe Calculator</span><span class="idx">01 / 07</span></div>
+  <h2>Dial in the recipe</h2>
+  <p class="lede">Set your dose or your target brew size — everything else recalculates: total water, bloom, pour schedule, grind, and temperature.</p>
+
+  <div class="calc-grid">
+    <div class="card">
+      <label class="field" for="doseInput">Coffee dose (<span class="unit-w">g</span>)</label>
+      <input type="number" id="doseInput" min="5" max="120" step="0.5" value="22.5">
+      <div class="quick" id="quickCups">
+        <button data-cups="1">1 cup · 250<span class="unit-w-btn">g</span></button>
+        <button data-cups="2">2 cups · 500<span class="unit-w-btn">g</span></button>
+        <button data-cups="3">3 cups · 750<span class="unit-w-btn">g</span></button>
+      </div>
+
+      <label class="field" for="waterInput">Total brew water (<span class="unit-w">g</span>)</label>
+      <input type="number" id="waterInput" min="100" max="2000" step="1">
+
+      <label class="field" for="ratioRange">Ratio — 1 : <span id="ratioVal" class="mono">16.5</span></label>
+      <input type="range" id="ratioRange" min="14" max="18" step="0.1" value="16.5">
+      <div class="range-row"><span>1:14 stronger</span><span>1:18 lighter</span></div>
+
+      <label class="field" for="bloomRange">Bloom water — <span id="bloomXVal" class="mono">2.5</span>× dose</label>
+      <input type="range" id="bloomRange" min="2" max="3" step="0.1" value="2.5">
+      <div class="range-row"><span>2× minimal</span><span>3× full saturation</span></div>
+
+      <label class="field" for="styleSelect">Pour structure</label>
+      <select id="styleSelect"></select>
+
+      <div id="fourSixExtras" style="display:none">
+        <label class="field" for="balanceSelect">4:6 balance (first 40%)</label>
+        <select id="balanceSelect">
+          <option value="standard">Standard — even split</option>
+          <option value="bright">Brighter — larger first pour</option>
+          <option value="sweet">Sweeter — larger second pour</option>
+        </select>
+        <label class="field" for="bodySelect">4:6 strength (last 60%)</label>
+        <select id="bodySelect">
+          <option value="3">Standard — 3 pours</option>
+          <option value="2">Lighter body — 2 pours</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <div class="brewcard">
+        <div class="bc-head"><span id="bcDevice">Hario V60</span><span>Brew Card</span></div>
+        <div class="bc-body">
+          <div class="bc-stat"><div class="k">Coffee</div><div class="v" id="bcDose">—</div></div>
+          <div class="bc-stat"><div class="k">Water</div><div class="v" id="bcWater">—</div></div>
+          <div class="bc-stat"><div class="k">Ratio</div><div class="v" id="bcRatio">—</div></div>
+          <div class="bc-stat"><div class="k">Bloom</div><div class="v" id="bcBloom">—</div></div>
+          <div class="bc-stat"><div class="k">Grind</div><div class="v" id="bcGrind">—</div></div>
+          <div class="bc-stat"><div class="k">Temp</div><div class="v" id="bcTemp">—</div></div>
+          <div class="bc-stat"><div class="k">Total time</div><div class="v" id="bcTime">—</div></div>
+          <div class="bc-stat"><div class="k">Est. yield</div><div class="v" id="bcYield">—</div></div>
+        </div>
+      </div>
+      <div class="diagram-wrap card" style="margin-top:14px">
+        <svg id="dripperSvg" width="220" height="200" viewBox="0 0 220 200" role="img" aria-label="Dripper cross-section diagram">
+          <defs>
+            <clipPath id="v60clip"><path d="M45 40 L175 40 L120 165 L100 165 Z"/></clipPath>
+            <clipPath id="chemexclip"><path d="M55 30 L165 30 L120 105 L138 190 L82 190 L100 105 Z"/></clipPath>
+          </defs>
+          <!-- water fill -->
+          <rect id="waterFill" x="30" y="165" width="160" height="0" fill="#7FA8B8" opacity="0.75" clip-path="url(#v60clip)"/>
+          <!-- coffee bed -->
+          <path id="bedPath" d="M78 110 L142 110 L120 163 L100 163 Z" fill="#5C4025"/>
+          <!-- vessel outline -->
+          <g id="v60shape">
+            <path d="M45 40 L175 40 L120 165 L100 165 Z" fill="none" stroke="#26201A" stroke-width="3"/>
+            <line x1="70" y1="55" x2="112" y2="150" stroke="#26201A" stroke-width="1" opacity="0.3"/>
+            <line x1="150" y1="55" x2="108" y2="150" stroke="#26201A" stroke-width="1" opacity="0.3"/>
+            <rect x="96" y="165" width="28" height="10" fill="none" stroke="#26201A" stroke-width="2.5"/>
+          </g>
+          <g id="chemexshape" style="display:none">
+            <path d="M55 30 L165 30 L120 105 L138 190 L82 190 L100 105 Z" fill="none" stroke="#26201A" stroke-width="3"/>
+            <rect x="92" y="96" width="36" height="18" rx="4" fill="#B26A2B" opacity="0.85"/>
+          </g>
+          <!-- drips -->
+          <g id="drips" style="display:none">
+            <circle cx="110" cy="180" r="2.5" fill="#7FA8B8"><animate attributeName="cy" values="170;196" dur="0.9s" repeatCount="indefinite"/></circle>
+          </g>
+        </svg>
+        <div class="diagram-cap" id="diagramCap">Idle — start the timer to watch the brew</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. SCHEDULE ============ -->
+<section id="schedule">
+  <div class="sec-label"><span>Pour Schedule</span><span class="idx">02 / 07</span></div>
+  <h2>The pour schedule</h2>
+  <p class="lede" id="scheduleLede"></p>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Step</th><th>Clock</th><th>Pour to</th><th>Add</th><th>Technique</th></tr></thead>
+      <tbody id="scheduleBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 3. TIMER ============ -->
+<section id="timer">
+  <div class="sec-label"><span>Guided Brew Timer</span><span class="idx">03 / 07</span></div>
+  <h2>Brew it live</h2>
+  <p class="lede">The timer walks the schedule above in real time — it tells you what to pour, to what weight, and when. A soft tone marks each step change.</p>
+  <div class="timer-grid">
+    <div class="card">
+      <div class="clock" id="clockDisplay">0:00</div>
+      <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+      <div class="timer-btns">
+        <button class="btn primary" id="startBtn">Start</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="timer-step">
+        <div class="label" id="stepLabel">Ready</div>
+        <div class="target" id="stepTarget">—</div>
+        <div class="hint" id="stepHint">Press start when your first pour begins.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. GRIND ============ -->
+<section id="grind">
+  <div class="sec-label"><span>Grind</span><span class="idx">04 / 07</span></div>
+  <h2>Grind size</h2>
+  <p class="lede" id="grindLede"></p>
+  <div class="card">
+    <div class="grind-scale">
+      <div class="grind-marker" id="grindMarker" style="left:40%">
+        <div class="flag" id="grindFlag">V60 · 450–650 µm</div>
+        <div class="stem"></div>
+      </div>
+      <div class="grind-band"></div>
+      <div class="grind-tick" style="left:0%">200</div>
+      <div class="grind-tick" style="left:25%">450</div>
+      <div class="grind-tick" style="left:50%">700</div>
+      <div class="grind-tick" style="left:75%">950</div>
+      <div class="grind-tick" style="left:100%">1200 µm</div>
+      <div class="grind-zone-label" style="left:8%">espresso</div>
+      <div class="grind-zone-label" style="left:33%">V60</div>
+      <div class="grind-zone-label" style="left:58%">Chemex</div>
+      <div class="grind-zone-label" style="left:88%">French press</div>
+    </div>
+    <p class="note-cell" style="margin-top:10px">Reference points: table salt ≈ 400 µm, kosher salt ≈ 800 µm. Rub grounds between your fingers — V60 should feel like fine sand, Chemex like coarse sand. If your drawdown runs long, coarsen; if it races, tighten. One notch at a time.</p>
+  </div>
+</section>
+
+<!-- ============ 5. TEMPERATURE ============ -->
+<section id="temp">
+  <div class="sec-label"><span>Water &amp; Temperature</span><span class="idx">05 / 07</span></div>
+  <h2>Temperature by roast</h2>
+  <div class="grid-2">
+    <div class="card">
+      <label class="field" for="roastSelect">Roast level</label>
+      <select id="roastSelect">
+        <option value="light">Light roast</option>
+        <option value="medium" selected>Medium roast</option>
+        <option value="dark">Dark roast</option>
+      </select>
+      <label class="field" for="tempRange">Brew temperature — <span id="tempVal" class="mono">92 °C</span></label>
+      <input type="range" id="tempRange" min="80" max="100" step="1" value="92">
+      <div class="range-row"><span id="tempLow">80 °C</span><span id="tempHigh">100 °C</span></div>
+      <p class="note-cell" style="margin-top:12px" id="tempAdvice"></p>
+    </div>
+    <div class="card note-card">
+      <h3>Water chemistry</h3>
+      <p>Water is 98%+ of the cup. Target roughly 50–150 ppm total dissolved solids with some hardness (magnesium pulls flavor) and moderate alkalinity (buffer ≈ 40 ppm as CaCO₃). Distilled water brews flat; very hard water brews dull and scales your kettle. Bottled water in the SCA range, or a remineralization recipe like "Third Wave Water," is the easy fix.</p>
+      <span class="fix">Off-boil rule of thumb: water dropped from boil loses ~2–3 °C per minute in an open kettle.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. EXTRACTION LAB ============ -->
+<section id="lab">
+  <div class="sec-label"><span>Extraction Lab</span><span class="idx">06 / 07</span></div>
+  <h2>TDS &amp; extraction yield</h2>
+  <p class="lede">If you own a refractometer, this is where the numbers live. Extraction yield (EY) is the percentage of the coffee's mass you dissolved; TDS is how concentrated the cup is. The classic targets: EY 18–22%, TDS 1.15–1.45%.</p>
+  <div class="grid-2">
+    <div class="card">
+      <label class="field" for="tdsInput">Measured TDS (%)</label>
+      <input type="number" id="tdsInput" min="0.5" max="3" step="0.01" value="1.35">
+      <label class="field" for="bevInput">Beverage weight (<span class="unit-w">g</span>)</label>
+      <input type="number" id="bevInput" min="50" max="2000" step="1">
+      <p class="note-cell" style="margin-top:10px">Beverage weight ≈ brew water − about 2× dose (the grounds hold roughly twice their weight in water). The field pre-fills with that estimate; weigh the carafe for real numbers.</p>
+    </div>
+    <div class="card">
+      <div class="bc-stat" style="border:none;padding:0 0 12px 0">
+        <div class="k">Extraction yield</div>
+        <div class="readout" id="eyReadout">— <small>%</small></div>
+        <span class="zone-pill" id="eyZone">—</span>
+      </div>
+      <div class="bc-stat" style="border:none;padding:0">
+        <div class="k">Strength (TDS)</div>
+        <div class="readout" id="tdsReadout">— <small>%</small></div>
+        <span class="zone-pill" id="tdsZone">—</span>
+      </div>
+      <p class="note-cell" style="margin-top:12px" id="labAdvice"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. TECHNIQUE & TROUBLESHOOTING ============ -->
+<section id="technique">
+  <div class="sec-label"><span>Technique &amp; Troubleshooting</span><span class="idx">07 / 07</span></div>
+  <h2>Agitation, pulses, and fixes</h2>
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="card note-card">
+      <h3>Agitation</h3>
+      <p>Every disturbance of the slurry speeds extraction. A gentle swirl after the bloom and once after the final pour ("Rao spin") levels the bed and knocks grounds off the walls. Stirring extracts harder than swirling — use it deliberately, not habitually. Excess agitation migrates fines downward and can choke the filter.</p>
+    </div>
+    <div class="card note-card">
+      <h3>Pulse vs. continuous</h3>
+      <p>Continuous pours keep the slurry hot and the bed deep — more even, faster. Pulse pours (like the 4:6 method) drop the water level between additions, extending contact time and giving you levers: the first pours shape acidity and sweetness, the later pours shape strength.</p>
+    </div>
+    <div class="card note-card">
+      <h3>The bed tells the truth</h3>
+      <p>After drawdown, read the bed. Flat = even extraction. Deep crater or grounds high on the walls = aggressive pouring. A dome = under-agitated. Stalled puddle = too fine or too many fines.</p>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card note-card">
+      <h3>Sour · thin · grassy</h3>
+      <p>Under-extracted. The water left before finishing the job.</p>
+      <span class="fix">→ Grind finer · raise temp 2–3° · slow the pours · add a pulse</span>
+    </div>
+    <div class="card note-card">
+      <h3>Bitter · dry · harsh</h3>
+      <p>Over-extracted. You kept dissolving past the good stuff.</p>
+      <span class="fix">→ Grind coarser · drop temp 2–3° · reduce agitation · shorten contact</span>
+    </div>
+    <div class="card note-card">
+      <h3>Drawdown too slow</h3>
+      <p>Bed is choking — too fine, too many fines, or over-stirred.</p>
+      <span class="fix">→ Coarsen one notch · swirl instead of stir · check burr alignment</span>
+    </div>
+    <div class="card note-card">
+      <h3>Drawdown too fast</h3>
+      <p>Water is channeling through, not extracting.</p>
+      <span class="fix">→ Grind finer · pour lower and slower · wet the filter fully first</span>
+    </div>
+    <div class="card note-card">
+      <h3>Weak but not sour</h3>
+      <p>Extraction is fine; the cup is just dilute.</p>
+      <span class="fix">→ Tighten the ratio (1:15) · keep grind and temp as-is</span>
+    </div>
+    <div class="card note-card">
+      <h3>Strong but muddled</h3>
+      <p>Concentrated and over-extracted at once — common with stale or dark coffee.</p>
+      <span class="fix">→ Loosen the ratio (1:17) · coarsen · consider fresher beans</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>THE POUR-OVER BENCH · V60 &amp; CHEMEX · RATIOS ARE STARTING POINTS — TASTE IS THE INSTRUMENT</footer>
+
+<script>
+(function(){
+"use strict";
+
+// ---------- state ----------
+const state = {
+  device:'v60',
+  units:'metric',
+  dose:22.5,          // grams, canonical
+  ratio:16.5,
+  bloomX:2.5,
+  style:'classic',    // per-device
+  balance:'standard', // 4:6 only
+  bodyPours:3,        // 4:6 only
+  roast:'medium',
+  tempC:92
+};
+
+const OZ = 28.3495;
+const $ = id => document.getElementById(id);
+
+// ---------- device data ----------
+const DEVICES = {
+  v60:{
+    name:'Hario V60',
+    styles:{
+      classic:{label:'Continuous — two-pour (Hoffmann-style)', total:210},
+      fourSix:{label:'Pulse — 4:6 method (Kasuya)', total:210}
+    },
+    grind:{classic:{lo:450,hi:650,txt:'Medium-fine'}, fourSix:{lo:700,hi:850,txt:'Medium-coarse'}},
+    dd:'Target drawdown finish: 2:45–3:30 for a ~500 g brew. Scale expectations with batch size.'
+  },
+  chemex:{
+    name:'Chemex',
+    styles:{
+      pulse:{label:'Pulse — bloom + three pours', total:270}
+    },
+    grind:{pulse:{lo:700,hi:900,txt:'Medium-coarse'}},
+    dd:'The thick Chemex filter runs slower: target 3:30–4:30 total for a ~500 g brew.'
+  }
+};
+
+const TEMP_BY_ROAST = {
+  light:{lo:93,hi:96, advice:'Light roasts are dense and resist extraction — run hot, 93–96 °C (199–205 °F). Many brewers go straight off the boil.'},
+  medium:{lo:88,hi:93, advice:'Medium roasts are flexible — 88–93 °C (190–199 °F). Start at 92 °C and move by taste.'},
+  dark:{lo:82,hi:88, advice:'Dark roasts are brittle and extract fast — 82–88 °C (180–190 °F) keeps the roast char and bitterness in check.'}
+};
+
+// ---------- formatting ----------
+function fmtW(g,dec){
+  if(state.units==='metric') return (dec?g.toFixed(1):Math.round(g)) + ' g';
+  const oz = g/OZ;
+  return oz.toFixed(oz<10?2:1) + ' oz';
+}
+function fmtT(c){
+  if(state.units==='metric') return Math.round(c)+' °C';
+  return Math.round(c*9/5+32)+' °F';
+}
+function fmtClock(s){
+  const m=Math.floor(s/60), ss=Math.round(s%60);
+  return m+':' + (ss<10?'0':'')+ss;
+}
+
+// ---------- derived values ----------
+function water(){ return Math.round(state.dose*state.ratio); }
+function bloom(){ return Math.round(state.dose*state.bloomX); }
+function estYield(){ return Math.max(0, water() - Math.round(state.dose*2)); }
+function grindSpec(){ return DEVICES[state.device].grind[state.style]; }
+
+// ---------- schedule builder ----------
+function buildSchedule(){
+  const W=water(), B=bloom(), D=DEVICES[state.device];
+  const steps=[];
+  function push(t0,t1,label,cum,note){ steps.push({t0,t1,label,cum,note}); }
+
+  if(state.device==='v60' && state.style==='classic'){
+    push(0,45,'Bloom',B,'Pour '+fmtW(B)+', then swirl gently to wet every ground.');
+    push(45,75,'Pour 1',Math.round(W*0.6),'Steady spiral, center outward. Reach 60% of total.');
+    push(75,105,'Pour 2',W,'Slower spiral to full weight. Keep the bed submerged and level.');
+    push(105,210,'Drawdown',W,'One gentle swirl to flatten the bed, then hands off.');
+  }
+  else if(state.device==='v60' && state.style==='fourSix'){
+    const first=W*0.4, rest=W*0.6;
+    let split=[0.5,0.5];
+    if(state.balance==='bright') split=[0.625,0.375];
+    if(state.balance==='sweet') split=[0.375,0.625];
+    const n=state.bodyPours;
+    const cums=[];
+    let c=first*split[0]; cums.push(c);
+    c=first; cums.push(c);
+    for(let i=1;i<=n;i++) cums.push(first + rest*i/n);
+    const starts = n===3 ? [0,45,90,130,160] : [0,45,95,145];
+    const labels=['Pour 1 — flavor','Pour 2 — flavor'];
+    for(let i=1;i<=n;i++) labels.push('Pour '+(i+2)+' — strength');
+    for(let i=0;i<cums.length;i++){
+      const t0=starts[i], t1=(i+1<starts.length)?starts[i+1]:190;
+      const note = i===0 ? 'This pour doubles as the bloom — pour center-out, let it drain.'
+                 : i===1 ? 'Second flavor pour. Let the bed nearly drain between pulses.'
+                 : 'Strength pour '+(i-1)+' of '+n+'. Even, low, gentle.';
+      push(t0,t1,labels[i],Math.round(cums[i]),note);
+    }
+    push(190,210,'Drawdown',W,'Let it drain fully. Bed should finish flat.');
+  }
+  else { // chemex pulse
+    const per=(W-B)/3;
+    push(0,45,'Bloom',B,'Pour '+fmtW(B)+', swirl once. Chemex filters need a thorough pre-rinse.');
+    push(45,105,'Pour 1',Math.round(B+per),'Spiral pour, avoid the filter walls.');
+    push(105,165,'Pour 2',Math.round(B+2*per),'Pour when the slurry drops near the bed.');
+    push(165,195,'Pour 3',W,'Final pulse to full weight. One light swirl.');
+    push(195,270,'Drawdown',W,'Thick filter, slow finish — patience is part of the recipe.');
+  }
+  return steps;
+}
+
+// ---------- render ----------
+function renderStyles(){
+  const sel=$('styleSelect'), D=DEVICES[state.device];
+  sel.innerHTML='';
+  Object.keys(D.styles).forEach(k=>{
+    const o=document.createElement('option');
+    o.value=k; o.textContent=D.styles[k].label;
+    sel.appendChild(o);
+  });
+  if(!D.styles[state.style]) state.style=Object.keys(D.styles)[0];
+  sel.value=state.style;
+  $('fourSixExtras').style.display = (state.style==='fourSix') ? 'block':'none';
+}
+
+function renderBrewCard(){
+  const D=DEVICES[state.device], g=grindSpec();
+  $('bcDevice').textContent=D.name;
+  $('bcDose').textContent=fmtW(state.dose,true);
+  $('bcWater').textContent=fmtW(water());
+  $('bcRatio').innerHTML='1:'+state.ratio.toFixed(1);
+  $('bcBloom').textContent=fmtW(bloom());
+  $('bcGrind').innerHTML=g.txt+' <em>'+g.lo+'–'+g.hi+' µm</em>';
+  $('bcTemp').textContent=fmtT(state.tempC);
+  $('bcTime').textContent='~'+fmtClock(D.styles[state.style].total);
+  $('bcYield').textContent='~'+fmtW(estYield());
+}
+
+function renderSchedule(){
+  const steps=buildSchedule();
+  const tb=$('scheduleBody');
+  tb.innerHTML='';
+  steps.forEach((s,i)=>{
+    const prev = i===0 ? 0 : steps[i-1].cum;
+    const add = s.cum - prev;
+    const tr=document.createElement('tr');
+    tr.dataset.step=i;
+    tr.innerHTML =
+      '<td>'+s.label+'</td>'+
+      '<td class="mono">'+fmtClock(s.t0)+' – '+fmtClock(s.t1)+'</td>'+
+      '<td class="mono">'+fmtW(s.cum)+'</td>'+
+      '<td class="mono">'+(add>0?'+'+fmtW(add):'—')+'</td>'+
+      '<td class="note-cell">'+s.note+'</td>';
+    tb.appendChild(tr);
+  });
+  $('scheduleLede').textContent = DEVICES[state.device].dd;
+}
+
+function renderGrind(){
+  const g=grindSpec();
+  const mid=(g.lo+g.hi)/2;
+  const pct=Math.min(100,Math.max(0,(mid-200)/(1200-200)*100));
+  $('grindMarker').style.left=pct+'%';
+  $('grindFlag').textContent=DEVICES[state.device].name+' · '+g.lo+'–'+g.hi+' µm';
+  $('grindLede').textContent = state.style==='fourSix'
+    ? 'The 4:6 method runs deliberately coarse — the extended pulse contact time makes up the extraction.'
+    : 'Grind is your primary lever. These ranges assume a decent burr grinder; blade grinders make a range, not a size.';
+}
+
+function renderTemp(){
+  const r=TEMP_BY_ROAST[state.roast];
+  $('tempVal').textContent=fmtT(state.tempC);
+  $('tempLow').textContent=fmtT(80);
+  $('tempHigh').textContent=fmtT(100);
+  let advice=r.advice;
+  if(state.tempC<r.lo) advice+=' Your current setting is below the recommended window for this roast.';
+  else if(state.tempC>r.hi) advice+=' Your current setting is above the recommended window for this roast.';
+  else advice+=' Your current setting sits inside the window.';
+  $('tempAdvice').textContent=advice;
+  renderBrewCard();
+}
+
+function renderLab(){
+  const tds=parseFloat($('tdsInput').value)||0;
+  const bev=parseFloat($('bevInput').value)||0;
+  const bevG = state.units==='metric' ? bev : bev*OZ;
+  const ey = state.dose>0 ? (tds*bevG)/state.dose : 0;
+  $('eyReadout').innerHTML=(ey?ey.toFixed(1):'—')+' <small>%</small>';
+  $('tdsReadout').innerHTML=(tds?tds.toFixed(2):'—')+' <small>%</small>';
+  const eyZone=$('eyZone'), tdsZone=$('tdsZone');
+  if(!ey){eyZone.textContent='—';eyZone.className='zone-pill';}
+  else if(ey<18){eyZone.textContent='Under-extracted';eyZone.className='zone-pill zone-warn';}
+  else if(ey<=22){eyZone.textContent='Ideal window';eyZone.className='zone-pill zone-good';}
+  else{eyZone.textContent='Over-extracted';eyZone.className='zone-pill zone-warn';}
+  if(!tds){tdsZone.textContent='—';tdsZone.className='zone-pill';}
+  else if(tds<1.15){tdsZone.textContent='Weak';tdsZone.className='zone-pill zone-warn';}
+  else if(tds<=1.45){tdsZone.textContent='Ideal window';tdsZone.className='zone-pill zone-good';}
+  else{tdsZone.textContent='Strong';tdsZone.className='zone-pill zone-warn';}
+  let advice='';
+  if(ey&&tds){
+    if(ey<18&&tds<1.15) advice='Weak and under-extracted: grind finer — it fixes both at once.';
+    else if(ey<18) advice='Strong but under-extracted: grind finer and loosen the ratio slightly.';
+    else if(ey>22&&tds>1.45) advice='Strong and over-extracted: coarsen the grind and consider a wider ratio.';
+    else if(ey>22) advice='Weak but over-extracted: coarsen the grind and tighten the ratio.';
+    else if(tds<1.15) advice='Extraction is healthy — just use less water (tighter ratio) for a stronger cup.';
+    else if(tds>1.45) advice='Extraction is healthy — widen the ratio if you want a lighter cup.';
+    else advice='Both numbers in the ideal window. This is the brewing control chart sweet spot — log this recipe.';
+  }
+  $('labAdvice').textContent=advice;
+}
+
+function renderDiagram(){
+  const isV60 = state.device==='v60';
+  $('v60shape').style.display = isV60?'':'none';
+  $('chemexshape').style.display = isV60?'none':'';
+  $('waterFill').setAttribute('clip-path', isV60?'url(#v60clip)':'url(#chemexclip)');
+  $('bedPath').setAttribute('d', isV60
+    ? 'M78 110 L142 110 L120 163 L100 163 Z'
+    : 'M82 68 L138 68 L120 103 L100 103 Z');
+}
+
+function renderUnits(){
+  document.querySelectorAll('.unit-w').forEach(el=>el.textContent = state.units==='metric'?'g':'oz');
+  document.querySelectorAll('.unit-w-btn').forEach(el=>el.textContent = state.units==='metric'?'g':'oz');
+  // rewrite dose & water inputs in display units
+  $('doseInput').value = state.units==='metric' ? state.dose : +(state.dose/OZ).toFixed(2);
+  $('waterInput').value = state.units==='metric' ? water() : +(water()/OZ).toFixed(1);
+  $('bevInput').value = state.units==='metric' ? estYield() : +(estYield()/OZ).toFixed(1);
+  // quick buttons
+  const cups=[250,500,750];
+  document.querySelectorAll('#quickCups button').forEach((b,i)=>{
+    const w=cups[i];
+    b.innerHTML=(i+1)+(i===0?' cup':' cups')+' · '+(state.units==='metric'? w+'g' : (w/OZ).toFixed(1)+'oz');
+  });
+}
+
+function renderAll(){
+  renderStyles();
+  renderUnits();
+  renderBrewCard();
+  renderSchedule();
+  renderGrind();
+  renderTemp();
+  renderLab();
+  renderDiagram();
+  resetTimer();
+}
+
+// ---------- events ----------
+$('deviceToggle').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.device=b.dataset.device;
+  document.querySelectorAll('#deviceToggle button').forEach(x=>x.classList.toggle('on',x===b));
+  const styles=Object.keys(DEVICES[state.device].styles);
+  if(!styles.includes(state.style)) state.style=styles[0];
+  renderAll();
+});
+$('unitToggle').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.units=b.dataset.units;
+  document.querySelectorAll('#unitToggle button').forEach(x=>x.classList.toggle('on',x===b));
+  renderAll();
+});
+$('doseInput').addEventListener('input',()=>{
+  const v=parseFloat($('doseInput').value); if(!v||v<=0) return;
+  state.dose = state.units==='metric' ? v : v*OZ;
+  renderUnitsSafe();
+});
+$('waterInput').addEventListener('input',()=>{
+  const v=parseFloat($('waterInput').value); if(!v||v<=0) return;
+  const wG = state.units==='metric' ? v : v*OZ;
+  state.dose = +(wG/state.ratio).toFixed(1);
+  $('doseInput').value = state.units==='metric' ? state.dose : +(state.dose/OZ).toFixed(2);
+  refreshOutputs();
+});
+function renderUnitsSafe(){
+  // like renderAll but without rewriting the field being typed in
+  $('waterInput').value = state.units==='metric' ? water() : +(water()/OZ).toFixed(1);
+  $('bevInput').value = state.units==='metric' ? estYield() : +(estYield()/OZ).toFixed(1);
+  refreshOutputs();
+}
+function refreshOutputs(){
+  renderBrewCard(); renderSchedule(); renderLab(); resetTimer();
+}
+$('ratioRange').addEventListener('input',()=>{
+  state.ratio=parseFloat($('ratioRange').value);
+  $('ratioVal').textContent=state.ratio.toFixed(1);
+  renderUnitsSafe();
+});
+$('bloomRange').addEventListener('input',()=>{
+  state.bloomX=parseFloat($('bloomRange').value);
+  $('bloomXVal').textContent=state.bloomX.toFixed(1);
+  refreshOutputs();
+});
+$('styleSelect').addEventListener('change',()=>{
+  state.style=$('styleSelect').value;
+  $('fourSixExtras').style.display = (state.style==='fourSix')?'block':'none';
+  renderBrewCard(); renderSchedule(); renderGrind(); resetTimer();
+});
+$('balanceSelect').addEventListener('change',()=>{state.balance=$('balanceSelect').value; renderSchedule(); resetTimer();});
+$('bodySelect').addEventListener('change',()=>{state.bodyPours=parseInt($('bodySelect').value,10); renderSchedule(); resetTimer();});
+$('roastSelect').addEventListener('change',()=>{
+  state.roast=$('roastSelect').value;
+  const r=TEMP_BY_ROAST[state.roast];
+  state.tempC=Math.round((r.lo+r.hi)/2);
+  $('tempRange').value=state.tempC;
+  renderTemp();
+});
+$('tempRange').addEventListener('input',()=>{state.tempC=parseInt($('tempRange').value,10); renderTemp();});
+$('tdsInput').addEventListener('input',renderLab);
+$('bevInput').addEventListener('input',renderLab);
+document.querySelectorAll('#quickCups button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const cups=parseInt(b.dataset.cups,10);
+    const wG=cups*250;
+    state.dose=+(wG/state.ratio).toFixed(1);
+    renderUnits(); refreshOutputs();
+  });
+});
+
+// ---------- timer ----------
+let timerId=null, startTs=null, elapsed=0, lastStepIdx=-1;
+let audioCtx=null;
+function beep(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.frequency.value=880; o.type='sine';
+    g.gain.setValueAtTime(0.12,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.35);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime+0.35);
+  }catch(e){}
+}
+function timerTick(){
+  elapsed=(Date.now()-startTs)/1000;
+  updateTimerUI();
+}
+function updateTimerUI(){
+  const steps=buildSchedule();
+  const total=DEVICES[state.device].styles[state.style].total;
+  $('clockDisplay').textContent=fmtClock(Math.min(elapsed,5999));
+  $('progressBar').style.width=Math.min(100,elapsed/total*100)+'%';
+  let idx=steps.findIndex(s=>elapsed>=s.t0&&elapsed<s.t1);
+  if(idx===-1&&elapsed>=total) idx=steps.length-1;
+  document.querySelectorAll('#scheduleBody tr').forEach((tr,i)=>tr.classList.toggle('active-step',i===idx));
+  if(idx>=0){
+    const s=steps[idx];
+    if(idx!==lastStepIdx){ beep(); lastStepIdx=idx; }
+    $('stepLabel').textContent=s.label;
+    $('stepTarget').textContent = s.label==='Drawdown' ? fmtW(s.cum)+' — done pouring' : 'pour to '+fmtW(s.cum);
+    $('stepHint').textContent=s.note;
+    // diagram fill: fraction of water poured
+    const frac=Math.min(1, s.cum/water());
+    const fillH = 20 + frac*90;
+    $('waterFill').setAttribute('y', String(165-fillH));
+    $('waterFill').setAttribute('height', String(fillH));
+    $('drips').style.display='';
+    $('diagramCap').textContent='Brewing — '+s.label.toLowerCase();
+  }
+  if(elapsed>=total){
+    stopTimer();
+    $('stepLabel').textContent='Complete';
+    $('stepTarget').textContent=fmtClock(total);
+    $('stepHint').textContent='Read the bed, taste the cup, adjust one variable next time.';
+    $('diagramCap').textContent='Brew complete';
+    $('drips').style.display='none';
+  }
+}
+function startTimer(){
+  if(timerId){ // pause
+    stopTimer(); $('startBtn').textContent='Resume'; return;
+  }
+  startTs=Date.now()-elapsed*1000;
+  timerId=setInterval(timerTick,200);
+  $('startBtn').textContent='Pause';
+}
+function stopTimer(){ if(timerId){clearInterval(timerId);timerId=null;} }
+function resetTimer(){
+  stopTimer(); elapsed=0; lastStepIdx=-1;
+  $('clockDisplay').textContent='0:00';
+  $('progressBar').style.width='0%';
+  $('startBtn').textContent='Start';
+  $('stepLabel').textContent='Ready';
+  $('stepTarget').textContent='—';
+  $('stepHint').textContent='Press start when your first pour begins.';
+  $('waterFill').setAttribute('height','0');
+  $('waterFill').setAttribute('y','165');
+  $('drips').style.display='none';
+  $('diagramCap').textContent='Idle — start the timer to watch the brew';
+  document.querySelectorAll('#scheduleBody tr').forEach(tr=>tr.classList.remove('active-step'));
+}
+$('startBtn').addEventListener('click',startTimer);
+$('resetBtn').addEventListener('click',resetTimer);
+
+// ---------- init ----------
+renderAll();
+})();
+</script>
+</body>
+</html>
