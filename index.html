@@ -618,7 +618,7 @@ footer{
 
 </main>
 
-<footer>THE POUR-OVER BENCH · V60 &amp; CHEMEX · RATIOS ARE STARTING POINTS — TASTE IS THE INSTRUMENT</footer>
+<footer>THE POUR-OVER BENCH · <span id="footerYear">2026</span> · V60 &amp; CHEMEX · RATIOS ARE STARTING POINTS — TASTE IS THE INSTRUMENT</footer>
 
 <script>
 (function(){
@@ -1019,6 +1019,7 @@ $('startBtn').addEventListener('click',startTimer);
 $('resetBtn').addEventListener('click',resetTimer);
 
 // ---------- init ----------
+$('footerYear').textContent = new Date().getFullYear();
 renderAll();
 })();
 </script>
